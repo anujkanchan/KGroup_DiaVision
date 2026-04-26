@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DiaVision — K Group DR Screening</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#F0FDF4;
+  --nav:#1C2B1E;
+  --white:#FFFFFF;
+  --panel:#F8FAF8;
+  --green:#16A34A;
+  --green-dark:#15803D;
+  --green-light:#DCFCE7;
+  --green-mid:#BBF7D0;
+  --green-btn:#1C2B1E;
+  --accent:#22C55E;
+  --border:#D1FAE5;
+  --border2:#E5E7EB;
+  --text:#111827;
+  --text2:#374151;
+  --text3:#6B7280;
+  --text4:#9CA3AF;
+  --red:#DC2626;--red-bg:#FEF2F2;--red-border:#FCA5A5;
+  --amber:#D97706;--amber-bg:#FFFBEB;--amber-border:#FDE68A;
+  --r:8px;--r2:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;font-size:14px}
+
+/* NAV */
+nav{background:var(--nav);height:60px;display:flex;align-items:center;padding:0 28px;gap:16px;flex-shrink:0;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:11px;margin-right:auto;text-decoration:none}
+.nav-icon{width:36px;height:36px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-icon svg{width:20px;height:20px;fill:white}
+.nav-kgroup{font-size:9px;color:rgba(255,255,255,0.45);letter-spacing:2.5px;text-transform:uppercase;line-height:1;margin-bottom:2px}
+.nav-name{font-size:16px;font-weight:700;color:white;line-height:1}
+.nav-link{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;border:1px solid rgba(255,255,255,.12);transition:all .18s}
+.nav-link:hover{color:var(--accent);border-color:rgba(34,197,94,.4)}
+.nav-link.cur{color:rgba(255,255,255,.55)}
+.nav-link.hi{color:var(--accent);border-color:transparent;background:none}
+
+/* LAYOUT: 3 columns */
+.layout{display:grid;grid-template-columns:280px 1fr 280px;flex:1;min-height:0}
+
+/* ── LEFT PANEL ── */
+.left{background:var(--white);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.left::-webkit-scrollbar{width:3px}
+.left::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.lsec{padding:16px 18px;border-bottom:1px solid #F0FDF4}
+.lsec-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:12px}
+
+.pid-box{background:var(--green-light);border:1px solid var(--green-mid);border-radius:var(--r);padding:9px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.pid-label{font-size:10px;color:var(--green-dark);font-weight:500;margin-bottom:1px}
+.pid-val{font-size:13px;font-weight:700;color:var(--green);font-family:monospace}
+
+.field{margin-bottom:9px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.field input,.field select{width:100%;background:var(--panel);border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;transition:all .18s}
+.field input:focus,.field select:focus{border-color:var(--accent);background:white;box-shadow:0 0 0 3px rgba(34,197,94,.1)}
+.field input::placeholder{color:var(--text4)}
+.field select option{background:white}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+.eye-seg{display:flex;gap:6px}
+.eye-btn{flex:1;padding:8px;border-radius:7px;border:1px solid var(--border2);background:var(--panel);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:4px}
+.eye-btn.on{background:var(--green-btn);border-color:var(--green-btn);color:white}
+.eye-btn:not(.on):hover{border-color:var(--accent);color:var(--green)}
+
+.upload-zone{border:2px dashed var(--green-mid);border-radius:var(--r2);padding:22px 14px;text-align:center;cursor:pointer;background:var(--green-light);transition:all .2s;position:relative}
+.upload-zone:hover,.upload-zone.over{border-color:var(--accent);background:#DCFCE7}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.up-icon{font-size:24px;margin-bottom:7px;display:block}
+.up-title{font-size:13px;font-weight:700;color:var(--green-dark);margin-bottom:2px}
+.up-hint{font-size:11px;color:var(--text3)}
+#prev-wrap{display:none;margin-top:10px;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);position:relative}
+#prev-img{width:100%;max-height:150px;object-fit:contain;display:block;background:#000}
+.prev-del{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:4px;background:rgba(0,0,0,.6);color:white;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+.prev-del:hover{background:var(--red)}
+
+.btn-run{width:100%;padding:11px;border:none;border-radius:var(--r);cursor:pointer;background:var(--green-btn);color:var(--accent);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;letter-spacing:.8px;transition:all .2s}
+.btn-run:hover:not(:disabled){background:#243B27;transform:translateY(-1px);box-shadow:0 4px 14px rgba(28,43,30,.25)}
+.btn-run:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-reset{width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--r);cursor:pointer;background:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:var(--text3);transition:all .18s;margin-top:6px}
+.btn-reset:hover{border-color:var(--text3);color:var(--text)}
+
+/* ── CENTER PANEL ── */
+.center{overflow-y:auto;display:flex;flex-direction:column;border-right:1px solid var(--border)}
+.center::-webkit-scrollbar{width:3px}
+.center::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--text3)}
+.empty-icon{font-size:48px;margin-bottom:14px;opacity:.45}
+.empty-title{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.empty-sub{font-size:12px;line-height:1.65;max-width:240px}
+
+.loading{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:13px;padding:40px}
+.loading.show{display:flex}
+.spin-wrap{width:52px;height:52px;border-radius:50%;border:3px solid var(--green-light);border-top-color:var(--accent);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-title{font-size:13px;font-weight:600;color:var(--green-dark)}
+.load-sub{font-size:11px;color:var(--text3);text-align:center;max-width:240px;line-height:1.55}
+
+#result{display:none;padding:20px;flex-direction:column;gap:13px}
+#result.show{display:flex}
+
+.verdict{border-radius:var(--r2);padding:16px 18px;border:1px solid;display:flex;gap:12px;align-items:flex-start}
+.verdict.DR{background:var(--red-bg);border-color:var(--red-border)}
+.verdict.nodr{background:var(--green-light);border-color:var(--green-mid)}
+.verdict.border{background:var(--amber-bg);border-color:var(--amber-border)}
+.v-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.verdict.DR .v-icon{background:#FCA5A5}
+.verdict.nodr .v-icon{background:var(--green-mid)}
+.verdict.border .v-icon{background:var(--amber-border)}
+.v-body{flex:1}
+.v-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+.verdict.DR .v-tag{color:var(--red)}
+.verdict.nodr .v-tag{color:var(--green-dark)}
+.verdict.border .v-tag{color:var(--amber)}
+.v-title{font-size:17px;font-weight:700;margin-bottom:3px;line-height:1.2}
+.verdict.DR .v-title{color:var(--red)}
+.verdict.nodr .v-title{color:var(--green-dark)}
+.verdict.border .v-title{color:var(--amber)}
+.v-sub{font-size:11px;color:var(--text3);line-height:1.55;margin-bottom:10px}
+.v-bar-row{display:flex;align-items:center;gap:9px}
+.v-bar-label{font-size:11px;color:var(--text3);width:68px;flex-shrink:0}
+.v-bar-track{flex:1;height:5px;background:rgba(0,0,0,.07);border-radius:99px;overflow:hidden}
+.v-bar-fill{height:100%;border-radius:99px;width:0%;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+.verdict.DR .v-bar-fill{background:var(--red)}
+.verdict.nodr .v-bar-fill{background:var(--accent)}
+.verdict.border .v-bar-fill{background:var(--amber)}
+.v-bar-pct{font-size:12px;font-weight:700;width:34px;text-align:right;flex-shrink:0}
+.verdict.DR .v-bar-pct{color:var(--red)}
+.verdict.nodr .v-bar-pct{color:var(--green-dark)}
+.verdict.border .v-bar-pct{color:var(--amber)}
+.v-prob{text-align:right;flex-shrink:0}
+.v-prob-num{font-size:32px;font-weight:800;line-height:1}
+.verdict.DR .v-prob-num{color:var(--red)}
+.verdict.nodr .v-prob-num{color:var(--green-dark)}
+.verdict.border .v-prob-num{color:var(--amber)}
+.v-prob-lbl{font-size:9px;color:var(--text4);text-transform:uppercase;letter-spacing:1px;margin-top:2px;text-align:center}
+
+.gcam-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.gcam-item{border-radius:var(--r);overflow:hidden;border:1px solid var(--border2)}
+.gcam-item img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#0a0a0a}
+.gcam-cap{background:var(--panel);padding:5px 9px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3)}
+
+.referral{display:flex;align-items:flex-start;gap:9px;padding:10px 14px;border-radius:var(--r);border-left:3px solid;font-size:13px;font-weight:600;line-height:1.5}
+.referral.yes{background:var(--red-bg);border-color:var(--red);color:#991B1B}
+.referral.no{background:var(--green-light);border-color:var(--accent);color:var(--green-dark)}
+.referral.maybe{background:var(--amber-bg);border-color:var(--amber);color:#92400E}
+.ref-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+
+.info-box{background:white;border:1px solid var(--border2);border-radius:var(--r);padding:11px 14px;font-size:12px;color:var(--text3);line-height:1.65}
+.btn-dl{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:10px;border:1px solid var(--border2);border-radius:var(--r);background:white;color:var(--text2);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;letter-spacing:.3px}
+.btn-dl:hover{border-color:var(--green-dark);color:var(--green-dark);background:var(--green-light)}
+
+/* ── RIGHT PANEL ── */
+.right{background:var(--panel);overflow-y:auto;display:flex;flex-direction:column}
+.right::-webkit-scrollbar{width:3px}
+.right::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.rsec{padding:16px 18px;border-bottom:1px solid var(--border)}
+.rsec-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:12px}
+
+.model-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.model-tile{background:white;border:1px solid var(--green-mid);border-radius:var(--r);padding:11px;text-align:center}
+.model-tile-val{font-size:16px;font-weight:700;color:var(--green-dark);line-height:1}
+.model-tile-lbl{font-size:10px;color:var(--text3);margin-top:3px}
+
+.team-list{display:flex;flex-direction:column;gap:8px}
+.team-member{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);line-height:1.3}
+.team-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.team-lead-badge{display:inline-block;font-size:9px;font-weight:700;background:var(--green-light);color:var(--green-dark);padding:1px 7px;border-radius:99px;border:1px solid var(--green-mid);margin-left:5px;vertical-align:middle;letter-spacing:.3px;white-space:nowrap;flex-shrink:0}
+
+.res-link{display:flex;align-items:center;gap:10px;padding:10px 12px;background:white;border:1px solid var(--border2);border-radius:var(--r);text-decoration:none;color:var(--text);transition:all .18s;margin-bottom:7px}
+.res-link:hover{border-color:var(--accent);transform:translateX(2px)}
+.res-icon{font-size:16px;width:24px;text-align:center;flex-shrink:0}
+.res-title{font-size:12px;font-weight:600;margin-bottom:1px}
+.res-sub{font-size:11px;color:var(--text3)}
+.res-arrow{margin-left:auto;color:var(--text4);font-size:12px;transition:transform .18s;flex-shrink:0}
+.res-link:hover .res-arrow{transform:translateX(3px);color:var(--green)}
+
+/* FUNDUS ERROR MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:white;border-radius:16px;padding:32px 28px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2);text-align:center;animation:popIn .25s cubic-bezier(.4,0,.2,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.modal-icon{font-size:48px;margin-bottom:14px;line-height:1}
+.modal-title{font-size:17px;font-weight:700;color:var(--red);margin-bottom:8px}
+.modal-msg{font-size:13px;color:var(--text3);line-height:1.65;margin-bottom:22px}
+.modal-msg strong{color:var(--text2)}
+.modal-btn{display:inline-block;padding:10px 28px;background:var(--green-btn);color:var(--accent);border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .18s}
+.modal-btn:hover{opacity:.85}
+.modal-hint{margin-top:14px;font-size:11px;color:var(--text4);line-height:1.6}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--nav);color:white;padding:9px 20px;border-radius:99px;font-size:12px;font-weight:500;transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{border-left:3px solid var(--accent)}
+.toast.err{border-left:3px solid var(--red)}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .left,.right{border:none;border-bottom:1px solid var(--border)}
+  .center{border:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+    <div><div class="nav-kgroup">K Group</div><div class="nav-name">DiaVision</div></div>
+  </a>
+  <a href="/" class="nav-link cur">DR Screening</a>
+  <a href="/info" class="nav-link hi">Eye Info →</a>
+</nav>
+
+<div class="layout">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="lsec">
+      <div class="lsec-label">New Scan</div>
+      <div class="pid-box">
+        <div><div class="pid-label">Patient ID</div><div class="pid-val" id="pid">—</div></div>
+        <span style="font-size:16px;opacity:.35">🪪</span>
+      </div>
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" id="pname" placeholder="Enter patient name" autocomplete="off"/>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Age</label><input type="number" id="page" placeholder="Years" min="1" max="120"/></div>
+        <div class="field"><label>Gender</label>
+          <select id="pgender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Eye Being Tested</label>
+        <div class="eye-seg">
+          <button class="eye-btn on" id="eye-L" onclick="pickEye('L')">👁 Left Eye</button>
+          <button class="eye-btn" id="eye-R" onclick="pickEye('R')">👁 Right Eye</button>
+        </div>
+      </div>
+    </div>
+    <div class="lsec" style="flex:1">
+      <div class="lsec-label">Fundus Image</div>
+      <div class="upload-zone" id="drop-zone">
+        <input type="file" id="file-input" accept="image/*" onchange="handleFile(this.files[0])"/>
+        <span class="up-icon">📷</span>
+        <div class="up-title">Drop image here</div>
+        <div class="up-hint">JPEG / PNG · max 16 MB</div>
+      </div>
+      <div id="prev-wrap">
+        <img id="prev-img" src="" alt=""/>
+        <button class="prev-del" onclick="clearImg()">✕</button>
+      </div>
+    </div>
+    <div class="lsec">
+      <button class="btn-run" id="run-btn" onclick="runAnalysis()">▶ ANALYSE</button>
+      <button class="btn-reset" onclick="resetAll()">↺ Clear / Next Patient</button>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center" id="center">
+    <div class="empty" id="empty-state">
+      <div class="empty-icon">🔭</div>
+      <div class="empty-title">Awaiting Fundus Image</div>
+      <div class="empty-sub">Fill in patient details, upload a retinal photograph, then click Analyse.</div>
+    </div>
+    <div class="loading" id="loading-state">
+      <div class="spin-wrap"></div>
+      <div class="load-title">Analysing fundus image…</div>
+      <div class="load-sub">EfficientNet-B4 + Grad-CAM · first run may take up to 60 s</div>
+    </div>
+    <div id="result">
+      <div class="verdict" id="v-card">
+        <div class="v-icon" id="v-icon"></div>
+        <div class="v-body">
+          <div class="v-tag" id="v-tag"></div>
+          <div class="v-title" id="v-title"></div>
+          <div class="v-sub" id="v-sub"></div>
+          <div class="v-bar-row">
+            <span class="v-bar-label">Probability</span>
+            <div class="v-bar-track"><div class="v-bar-fill" id="v-bar"></div></div>
+            <span class="v-bar-pct" id="v-pct">—</span>
+          </div>
+        </div>
+        <div class="v-prob"><div class="v-prob-num" id="v-probnum">—</div><div class="v-prob-lbl">DR Prob.</div></div>
+      </div>
+      <div class="gcam-grid" id="gcam" style="display:none">
+        <div class="gcam-item"><img id="img-original" src="" alt="Preprocessed"/><div class="gcam-cap">Preprocessed</div></div>
+        <div class="gcam-item"><img id="img-heatmap" src="" alt="Grad-CAM"/><div class="gcam-cap">Grad-CAM</div></div>
+        <div class="gcam-item"><img id="img-overlay" src="" alt="Overlay"/><div class="gcam-cap">Overlay</div></div>
+      </div>
+      <div class="referral" id="ref-strip">
+        <span class="ref-icon" id="ref-icon"></span>
+        <span id="ref-text"></span>
+      </div>
+      <div class="info-box">
+        <strong style="color:var(--green-dark)">ℹ Interpretation — </strong>
+        Scores ≥35% are flagged as DR. Scores 20–35% are borderline. This is a <strong>decision support tool only</strong> — all results must be reviewed by a qualified ophthalmologist before any clinical decision is made.
+      </div>
+      <button class="btn-dl" onclick="downloadReport()">↓ &nbsp;Export Screening Report</button>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="rsec">
+      <div class="rsec-label">Model Info</div>
+      <div class="model-tiles">
+        <div class="model-tile"><div class="model-tile-val">B4</div><div class="model-tile-lbl">EfficientNet</div></div>
+        <div class="model-tile"><div class="model-tile-val">0.35</div><div class="model-tile-lbl">Threshold</div></div>
+        <div class="model-tile"><div class="model-tile-val">300</div><div class="model-tile-lbl">Input px</div></div>
+        <div class="model-tile"><div class="model-tile-val">CPU</div><div class="model-tile-lbl">Inference</div></div>
+      </div>
+    </div>
+    <div class="rsec">
+      <div class="rsec-label">Made By</div>
+      <div class="team-list">
+        <div class="team-member"><div class="team-dot"></div><span>Anuj G. Kanchan<span class="team-lead-badge">Team Lead</span></span></div>
+        <div class="team-member"><div class="team-dot"></div><span>Viraj S. Kalbhor</span></div>
+        <div class="team-member"><div class="team-dot"></div><span>Yash B. Kalbhor</span></div>
+        <div class="team-member"><div class="team-dot"></div><span>Sandesh S. Kalbhor</span></div>
+      </div>
+    </div>
+    <div class="rsec">
+      <div class="rsec-label">Resources</div>
+      <a class="res-link" href="https://www.nei.nih.gov/learn-about-eye-health/eye-conditions-and-diseases/diabetic-retinopathy" target="_blank">
+        <span class="res-icon">🏛</span><div><div class="res-title">NIH — National Eye Institute</div><div class="res-sub">Symptoms, diagnosis &amp; treatment</div></div><span class="res-arrow">→</span>
+      </a>
+      <a class="res-link" href="https://www.aao.org/eye-health/diseases/what-is-diabetic-retinopathy" target="_blank">
+        <span class="res-icon">👁</span><div><div class="res-title">AAO Ophthalmology</div><div class="res-sub">Grading, stages &amp; management</div></div><span class="res-arrow">→</span>
+      </a>
+      <a class="res-link" href="https://www.who.int/news-room/fact-sheets/detail/blindness-and-visual-impairment" target="_blank">
+        <span class="res-icon">🌐</span><div><div class="res-title">WHO Visual Impairment</div><div class="res-sub">Global burden &amp; prevention</div></div><span class="res-arrow">→</span>
+      </a>
+      <a class="res-link" href="https://www.lvpei.org" target="_blank">
+        <span class="res-icon">🇮🇳</span><div><div class="res-title">L V Prasad Eye Institute</div><div class="res-sub">India's leading eye care centre</div></div><span class="res-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FUNDUS ERROR MODAL -->
+<div class="modal-overlay" id="fundus-modal">
+  <div class="modal-box">
+    <div class="modal-icon">🔬</div>
+    <div class="modal-title">Invalid Image Uploaded</div>
+    <div class="modal-msg" id="modal-msg">
+      Please upload a <strong>valid fundus camera retinal photograph</strong>.<br/>
+      This tool only works with retinal images captured by a fundus camera.
+    </div>
+    <button class="modal-btn" onclick="closeModal()">Try Again</button>
+    <div class="modal-hint">
+      ✓ Valid: fundus camera retinal photos (circular retina on dark background)<br/>
+      ✗ Invalid: selfies, family photos, screenshots, eye scans from other devices
+    </div>
+  </div>
+</div>
+
+<script>
+let selEye='L',uploadedFile=null,lastResult=null;
+let ptCount=parseInt(localStorage.getItem('dv3_c')||'0');
+
+function genPID(){
+  ptCount++;localStorage.setItem('dv3_c',ptCount);
+  document.getElementById('pid').textContent='DV-'+new Date().getFullYear()+'-'+String(ptCount).padStart(4,'0');
+}
+genPID();
+
+function pickEye(s){
+  selEye=s;
+  document.getElementById('eye-L').classList.toggle('on',s==='L');
+  document.getElementById('eye-R').classList.toggle('on',s==='R');
+}
+
+function handleFile(f){
+  if(!f||!f.type.startsWith('image/')){toast('Please upload a valid image','err');return}
+  uploadedFile=f;
+  const r=new FileReader();
+  r.onload=e=>{
+    document.getElementById('prev-img').src=e.target.result;
+    document.getElementById('prev-wrap').style.display='block';
+    document.getElementById('drop-zone').style.display='none';
+    toast('Image loaded ✓','ok');
+  };
+  r.readAsDataURL(f);
+}
+
+function clearImg(){
+  uploadedFile=null;
+  document.getElementById('file-input').value='';
+  document.getElementById('prev-img').src='';
+  document.getElementById('prev-wrap').style.display='none';
+  document.getElementById('drop-zone').style.display='block';
+}
+
+const dz=document.getElementById('drop-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+
+function setState(s){
+  document.getElementById('empty-state').style.display=s==='empty'?'flex':'none';
+  document.getElementById('loading-state').classList.toggle('show',s==='loading');
+  const r=document.getElementById('result');
+  s==='result'?r.classList.add('show'):r.classList.remove('show');
+}
+
+async function runAnalysis(){
+  if(!document.getElementById('pname').value.trim()){toast('Enter patient name','err');return}
+  if(!document.getElementById('page').value.trim()){toast('Enter patient age','err');return}
+  if(!document.getElementById('pgender').value){toast('Select gender','err');return}
+  if(!uploadedFile){toast('Upload a fundus image first','err');return}
+  document.getElementById('run-btn').disabled=true;
+  setState('loading');
+  const ctrl=new AbortController();
+  const tid=setTimeout(()=>ctrl.abort(),90000);
+  try{
+    const fd=new FormData();fd.append('image',uploadedFile);
+    const resp=await fetch('/predict',{method:'POST',body:fd,signal:ctrl.signal});
+    clearTimeout(tid);
+    if(!resp.ok){let m='Server error ('+resp.status+')';try{const e=await resp.json();m=e.error||m}catch(_){}throw new Error(m)}
+    const data=await resp.json();
+    if(data.success===false)throw new Error(data.error||'Prediction failed');
+    renderResult(data);
+  }catch(err){
+    clearTimeout(tid);setState('empty');
+    if(err.name==='AbortError'||String(err).includes('timeout'))toast('⏱ Timed out — retry in 30 s','err');
+    else if(err.message&&err.message!=='Failed to fetch'){
+      // Check if it's an invalid fundus image error (422)
+      if(err.message.toLowerCase().includes('invalid image')||err.message.toLowerCase().includes('fundus')||err.message.toLowerCase().includes('retinal')){
+        showFundusError(err.message);
+      } else {
+        toast('⚠ '+err.message,'err');
+      }
+    }
+    else toast('⚠ Network error','err');
+  }finally{document.getElementById('run-btn').disabled=false}
+}
+
+function renderResult(data){
+  const status=data.label,prob=data.confidence,pct=Math.round(prob*100);
+  lastResult={status,prob,pct,
+    pid:document.getElementById('pid').textContent,
+    name:document.getElementById('pname').value,
+    age:document.getElementById('page').value,
+    gender:document.getElementById('pgender').value,
+    eye:selEye==='L'?'Left Eye':'Right Eye'
+  };
+  const vc=document.getElementById('v-card');
+  vc.className='verdict '+(status==='DR'?'DR':status==='Borderline'?'border':'nodr');
+  const icons={'DR':'⚠️','Borderline':'⚡','No DR':'✅'};
+  const tags={'DR':'POSITIVE SCREENING','Borderline':'BORDERLINE — REVIEW ADVISED','No DR':'NEGATIVE SCREENING'};
+  const titles={'DR':'DR Detected','Borderline':'Borderline — Manual Review Needed','No DR':'No DR Detected'};
+  const subs={'DR':'Signs consistent with diabetic retinopathy were found in this fundus image.','Borderline':'DR probability between 20–35%. Further clinical examination recommended.','No DR':'No significant signs of diabetic retinopathy detected in this fundus image.'};
+  document.getElementById('v-icon').textContent=icons[status];
+  document.getElementById('v-tag').textContent=tags[status];
+  document.getElementById('v-title').textContent=titles[status];
+  document.getElementById('v-sub').textContent=subs[status];
+  document.getElementById('v-pct').textContent=pct+'%';
+  document.getElementById('v-probnum').textContent=pct+'%';
+  setTimeout(()=>{document.getElementById('v-bar').style.width=pct+'%'},80);
+  const refs={'DR':{cls:'yes',icon:'🔴',txt:'Refer to Ophthalmologist — Immediate review strongly recommended.'},'Borderline':{cls:'maybe',icon:'🟡',txt:'Further Examination Advised — Ophthalmology referral recommended.'},'No DR':{cls:'no',icon:'🟢',txt:'No Referral Required — Routine annual screening advised.'}};
+  const r=refs[status];
+  document.getElementById('ref-strip').className='referral '+r.cls;
+  document.getElementById('ref-icon').textContent=r.icon;
+  document.getElementById('ref-text').textContent=r.txt;
+  if(data.original&&data.heatmap&&data.overlay){
+    document.getElementById('img-original').src='data:image/png;base64,'+data.original;
+    document.getElementById('img-heatmap').src='data:image/png;base64,'+data.heatmap;
+    document.getElementById('img-overlay').src='data:image/png;base64,'+data.overlay;
+    document.getElementById('gcam').style.display='grid';
+  }
+  setState('result');
+  toast(status==='DR'?'DR detected — refer patient':'Analysis complete ✓','ok');
+}
+
+function resetAll(){
+  document.getElementById('pname').value='';
+  document.getElementById('page').value='';
+  document.getElementById('pgender').value='';
+  clearImg();setState('empty');
+  document.getElementById('gcam').style.display='none';
+  document.getElementById('v-bar').style.width='0%';
+  pickEye('L');genPID();lastResult=null;
+  toast('Ready for next patient','ok');
+}
+
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+(type||'');
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function showFundusError(msg){
+  // Strip the "Invalid image:" prefix if present for cleaner display
+  let clean = msg.replace(/^Invalid image:\s*/i,'').replace(/Please upload a valid fundus camera retinal photograph\./i,'').trim();
+  if(clean){
+    document.getElementById('modal-msg').innerHTML =
+      '<strong>Reason:</strong> '+clean+'<br/><br/>Please upload a <strong>valid fundus camera retinal photograph</strong>.<br/>This tool only works with retinal images captured by a fundus camera.';
+  }
+  document.getElementById('fundus-modal').classList.add('show');
+  // Also clear the uploaded image so user starts fresh
+  clearImg();
+}
+
+function closeModal(){
+  document.getElementById('fundus-modal').classList.remove('show');
+}
+
+// Close modal on overlay click
+document.getElementById('fundus-modal').addEventListener('click', function(e){
+  if(e.target===this) closeModal();
+});
+
+function downloadReport(){
+  if(!lastResult)return;
+  const {status,pct,pid,name,age,gender,eye}=lastResult;
+  const date=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  const time=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const colMap={'DR':'#DC2626','Borderline':'#D97706','No DR':'#16A34A'};
+  const bgMap={'DR':'#FEF2F2','Borderline':'#FFFBEB','No DR':'#F0FDF4'};
+  const col=colMap[status],bg=bgMap[status];
+  const refMap={'DR':'REFER TO OPHTHALMOLOGIST — Immediate review strongly recommended.','Borderline':'FURTHER EXAMINATION ADVISED — Ophthalmology referral recommended.','No DR':'No referral required — Routine annual screening advised.'};
+  const origSrc=document.getElementById('img-original').src;
+  const heatSrc=document.getElementById('img-heatmap').src;
+  const ovrlSrc=document.getElementById('img-overlay').src;
+  const hasImgs=origSrc&&origSrc.length>50;
+  const imgSec=hasImgs?`<div style="margin-bottom:20px"><div class="st">Grad-CAM Visual Analysis</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div><img src="${origSrc}" style="width:100%;border-radius:6px;border:1px solid #E5E7EB"/><div style="text-align:center;font-size:9px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:.8px">Preprocessed</div></div><div><img src="${heatSrc}" style="width:100%;border-radius:6px;border:1px solid #E5E7EB"/><div style="text-align:center;font-size:9px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:.8px">Grad-CAM</div></div><div><img src="${ovrlSrc}" style="width:100%;border-radius:6px;border:1px solid #E5E7EB"/><div style="text-align:center;font-size:9px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:.8px">Overlay</div></div></div></div>`:'';
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>DiaVision Report — ${pid}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>body{font-family:'Inter',sans-serif;margin:0;padding:0;background:#fff;color:#111827}.hdr{background:#1C2B1E;padding:20px 32px;display:flex;justify-content:space-between;align-items:center}.hdr-l .kg{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:3px}.hdr-l h1{font-size:17px;margin:0;font-weight:700;color:white}.hdr-l p{font-size:11px;margin:3px 0 0;color:rgba(255,255,255,.4)}.hdr-r{text-align:right;font-size:11px;color:rgba(255,255,255,.4)}.body{padding:26px 32px}.st{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6B7280;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid #F3F4F6}.igrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}.ii label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#9CA3AF;display:block;margin-bottom:2px}.ii span{font-size:13px;font-weight:600}.vbox{background:${bg};border:1px solid ${col}44;border-radius:10px;padding:16px 20px;margin-bottom:13px;display:flex;align-items:flex-start;gap:14px}.vbox-body{flex:1}.vbox h2{color:${col};font-size:18px;margin:0 0 4px;font-weight:700}.vbox p{color:#6B7280;font-size:12px;margin:0 0 10px}.brow{display:flex;align-items:center;gap:9px}.bg{flex:1;height:5px;background:rgba(0,0,0,.07);border-radius:99px;overflow:hidden}.bf{height:100%;background:${col};border-radius:99px;width:${pct}%}.vbox-prob{text-align:right;flex-shrink:0}.vbox-prob .pn{font-size:28px;font-weight:800;color:${col};line-height:1}.vbox-prob .pl{font-size:9px;color:#9CA3AF;text-transform:uppercase;letter-spacing:1px;margin-top:2px}.ref{padding:9px 13px;background:${bg};border-left:4px solid ${col};font-size:12px;font-weight:600;color:${col};border-radius:0 6px 6px 0;margin-bottom:16px}.disc{font-size:10px;color:#D97706;background:#FFFBEB;padding:9px 13px;border-left:3px solid #D97706;border-radius:0 6px 6px 0;line-height:1.65}.footer{background:#F9FAFB;border-top:1px solid #F3F4F6;padding:11px 32px;display:flex;justify-content:space-between;font-size:10px;color:#9CA3AF}</style></head><body>
+<div class="hdr"><div class="hdr-l"><div class="kg">K Group</div><h1>DiaVision — Screening Report</h1><p>Diabetic Retinopathy AI Screening · EfficientNet-B4</p></div><div class="hdr-r"><div>${date} · ${time}</div><div>Report ID: ${pid}-RPT</div></div></div>
+<div class="body">
+<div class="st" style="margin-bottom:10px">Patient Information</div>
+<div class="igrid"><div class="ii"><label>Patient ID</label><span>${pid}</span></div><div class="ii"><label>Patient Name</label><span>${name}</span></div><div class="ii"><label>Age / Gender</label><span>${age} yrs / ${gender}</span></div><div class="ii"><label>Eye Tested</label><span>${eye}</span></div><div class="ii"><label>Date</label><span>${date}</span></div><div class="ii"><label>Time</label><span>${time}</span></div></div>
+<div class="st">Screening Result</div>
+<div class="vbox"><div class="vbox-body"><h2>${status==='DR'?'Diabetic Retinopathy Detected':status==='Borderline'?'Borderline — Review Needed':'No Diabetic Retinopathy Detected'}</h2><p>${status==='DR'?'Signs consistent with DR were found.':status==='Borderline'?'Probability 20–35%. Further examination recommended.':'No significant signs of DR detected.'}</p><div class="brow"><span style="font-size:10px;font-weight:600;color:#6B7280;width:90px">DR Probability</span><div class="bg"><div class="bf"></div></div><span style="font-size:12px;font-weight:700;color:${col};width:32px;text-align:right">${pct}%</span></div></div><div class="vbox-prob"><div class="pn">${pct}%</div><div class="pl">DR Prob.</div></div></div>
+<div class="ref">${refMap[status]}</div>
+${imgSec}
+<div class="disc"><strong>⚠ Clinical Disclaimer:</strong> This report is generated by an AI screening tool and is a <strong>decision support aid only</strong>. It does not constitute a medical diagnosis. All results must be confirmed by a qualified ophthalmologist.</div>
+</div>
+<div class="footer"><span>DiaVision · K Group · EfficientNet-B4 · Threshold 0.35</span><span>Anuj G. Kanchan (Team Lead) · Viraj S. Kalbhor · Yash B. Kalbhor · Sandesh S. Kalbhor</span><span>Generated ${date} at ${time}</span></div>
+</body></html>`;
+  const w=window.open('','_blank');w.document.write(html);w.document.close();setTimeout(()=>w.print(),600);
+}
+</script>
+</body>
+</html>

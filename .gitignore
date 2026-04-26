@@ -1,0 +1,15 @@
+# Virtual Environment
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+
+# Model files
+*.pth
+*.h5
+*.pt
+
+# System files
+.DS_Store
