@@ -99,7 +99,7 @@ diavision/
 | Borderline range | 0.20 – 0.35 |
 | Inference device | CPU |
 | Explainability | Grad-CAM |
-| Weights hosted on | HuggingFace Hub (`Salonideshmukh/dr-detection-model`) |
+| Weights hosted on | HuggingFace Hub (`anujkanchan/dr-detection-model`) |
 
 ---
 
