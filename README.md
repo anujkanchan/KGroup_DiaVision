@@ -240,6 +240,7 @@ docker run -p 7860:7860 diavision
 ## License
 
 MIT License — see [LICENSE](LICENSE) for details.
+Check The Project : https://huggingface.co/spaces/Anuj43/KGroupDiaVision
 
 ---
 
